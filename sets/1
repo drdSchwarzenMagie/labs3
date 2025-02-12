@@ -4,3 +4,18 @@
 4. 1.1
 5. 200 OK
 6. 540by
+8. no
+9. весб файл html
+10. If-Modified-Since: Wed, 12 Feb 2025 06:59:01 GMT
+11. 304 Not Modified. Сервер не передает сам файл, потому что он не изменился, и браузер использует кэшированную версию
+12. 1
+13. 200 OK
+14. 4
+15. 128.119.245.12 /wireshark-labs/HTTP-wireshark-file4.html  
+	128.119.245.12 /pearson.png
+	178.79.137.164 /8E_cover_small.jpg
+16. Загрузка изображений происходила параллельно, поскольку изображения находятся на разных веб-серверах.
+17. 401 Unauthorized
+18. Authorization
+19. wireshark-students:network в формате Base64
+
