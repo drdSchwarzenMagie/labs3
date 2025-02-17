@@ -1,112 +1,156 @@
 <?php
+// Подключаем файл simple_start.php
+include 'simple_start.php';
 
-// Определение всех переменных внутри текущего скрипта
-$a      = 15;        # целое
-$fl     = 3.14;      # с плавающей точкой
-$boo    = TRUE;      # boolean
-$str    = "stroka";  # строка
-$nol    = 0;
-$pusto  = "";
-
-$s1 = "Переменная a = $a \n";   # разбираемая строка
-$s2 = 'Переменная a = $a \n';   # неразбираемая строка
-
-$mas = array( "one" => TRUE,
-        1   => -20,
-          "three" => 3.14);
-$mas[]="two";
-$mas["four"]=4;
-
-// Создание таблицы
-echo '<html><head><style>
-    table {width: 100%; border-collapse: collapse;}
-    th, td {border: 1px solid black; padding: 8px; text-align: center;}
-    th {background-color: #f2f2f2;}
-    </style></head><body>';
-echo '<table>';
-
-// Заголовок таблицы
-echo '<tr><th>Номер задания</th><th>Решение</th><th>Результат</th></tr>';
-
-// Задание 1: Вывести значение переменных $a, $fl, $boo, $str
-echo '<tr><td>1</td><td>echo "$a, $fl, $boo, $str";</td><td>';
-echo "$a, $fl, $boo, $str";
-echo '</td></tr>';
-
-// Задание 2: Вывести результат сложения переменных $a и $str
-echo '<tr><td>2</td><td>echo $a + $str;</td><td>';
-try {
-    // Пытаемся сложить переменные
-    if (!is_numeric($str)) {
-        throw new Exception("Невозможно сложить число и строку");
-    }
-    echo $a + $str;
-} catch (Exception $e) {
-    // Обработка исключения
-    echo "Ошибка: " . $e->getMessage(); // Выводим ошибку
-}
-echo '</td></tr>';
-
-// Задание 3: Вывести результат сравнения переменных $a и $str
-echo '<tr><td>3</td><td>echo $a == $str;</td><td>';
-echo $a == $str ? 'true' : 'false'; // Сравнение с приведением типов
-echo '</td></tr>';
-
-// Задание 4: Вывести результат сравнения переменных $nol и $pusto с использованием операторов == и ===
-echo '<tr><td>4</td><td>echo $nol == $pusto, " и ", $nol === $pusto;</td><td>';
-echo $nol == $pusto ? 'true' : 'false';
-echo ' и ';
-echo $nol === $pusto ? 'true' : 'false'; // Сравнение с учетом типов
-echo '</td></tr>';
-
-// Задание 5: Сравнить результат вывода переменных $s1 и $s2
-echo '<tr><td>5</td><td>echo $s1 == $s2;</td><td>';
-echo $s1 == $s2 ? 'true' : 'false'; // Сравнение с приведением типов
-echo '</td></tr>';
-
-// Задание 6: Вывести $mas["one"], $mas[2], $mas[3]
-echo '<tr><td>6</td><td>echo $mas["one"], $mas[2], $mas[3];</td><td>';
-echo $mas["one"], ', ';
-// Проверяем существование индекса перед выводом
-if (isset($mas[2])) {
-    echo $mas[2], ', ';
-} else {
-    echo ', ', '';
-}
-
-// Проверяем существование индекса 3 перед выводом
-if (isset($mas[3])) {
-    echo $mas[3];
-} else {
-    echo '';
-}
-echo '</td></tr>';
-
-// Задание 7: С помощью var_dump() вывести массив $mas
-echo '<tr><td>7</td><td>var_dump($mas);</td><td>';
-var_dump($mas);
-echo '</td></tr>';
-
-// Задание 8: Вывести преобразование в строку (string)$fl (или strval($fl)) значения переменной $fl
-echo '<tr><td>8</td><td>echo (string)$fl;</td><td>';
-echo (string)$fl; // или strval($fl)
-echo '</td></tr>';
-
-// Задание 9: Вывести преобразование в строку массива $mas
-echo '<tr><td>9</td><td>echo (string)$mas;</td><td>';
-// Используем print_r() для корректного отображения массива как строки
-echo '<pre>';
-print_r($mas);  // Отображение массива в виде строки
-echo '</pre>';
-echo '</td></tr>';
-
-
-// Задание 10: Вывести значение переменной $a, используя синтаксис "переменные переменных"
-echo '<tr><td>10</td><td>echo ${$name};</td><td>';
-$name = "a";  // Переменная переменных
-echo ${$name}; // Вывод значения переменной $a
-echo '</td></tr>';
-
-// Закрытие таблицы
-echo '</table></body></html>';
+// Массив с заданиями
+$tasks = [
+    [
+        'number' => 1,
+        'solution' => 'echo $a; echo $fl; echo $boo; echo $str;',
+        'result' => $a . ' ' . $fl . ' ' . ($boo ? 'TRUE' : 'FALSE') . ' ' . $str
+    ],
+    [
+        'number' => 2,
+        'solution' => 'echo $a + $str;',
+        'result' => $a + (int)$str 
+    ],
+    [
+        'number' => 3,
+        'solution' => 'echo $a == $str;',
+        'result' => ($a == $str) ? 'TRUE' : 'FALSE' // Ожидаем FALSE, так как типы разные
+    ],
+    [
+        'number' => 4,
+        'solution' => 'echo $nol == $pusto; echo $nol === $pusto;',
+        'result' => ($nol == $pusto ? 'TRUE' : 'FALSE') . ' ' . ($nol === $pusto ? 'TRUE' : 'FALSE')
+    ],
+    [
+        'number' => 5,
+        'solution' => 'echo $s1; echo $s2;',
+        'result' => $s1 . $s2 
+    ],
+    [
+        'number' => 6,
+        'solution' => '$mas["one"], $mas[2], $mas[3]',
+        'result' => "{$mas['one']}, {$mas[2]}, {$mas[3]}"
+    ],
+    [
+        'number' => 7,
+        'solution' => 'var_dump($mas)',
+        'result' => ''
+    ],
+    [
+        'number' => 8,
+        'solution' => '(string)$fl',
+        'result' => (string)$fl
+    ],
+    [
+        'number' => 9,
+        'solution' => 'print_r($mas, true)',
+        'result' => print_r($mas, true)
+    ],
+    [
+        'number' => 10,
+        'solution' => '${$name}',
+        'result' => ${$name}
+    ],
+    [
+        'number' => 11,
+        'solution' => '$var1, $var2, $var3',
+        'result' => "$var1, $var2, $var3"
+    ],
+    [
+        'number' => 12,
+        'solution' => '$ref = & $a; $ref = 20;',
+        'result' => 
+            (function() {
+                global $a;
+                $ref = &$a; 
+                $ref = 20;  
+                return $a;  
+            })()
+    ],
+    [
+        'number' => 13,
+        'solution' => 'HOST',
+        'result' => HOST
+    ],
+    [
+        'number' => 14,
+        'solution' => '$str=$HOST; $str=@$HOST;',
+        'result' => "$str1; $str2"
+    ],
+    [
+        'number' => 15,
+        'solution' => '$file_list = `ls -a`; echo $file_list;',
+        'result' => $file_list
+    ],
+    [
+        'number' => 16,
+        'solution' => '$str.$nol + 1',
+        'result' => ($str . $nol . '1')
+    ],
+    [
+        'number' => 17,
+        'solution' => '$merged_mas = $mas + $mas_add; var_dump($merged_mas)',
+        'result' => ''
+    ]
+];
 ?>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сводная таблица решений заданий</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid black;
+            text-align: left;
+        }
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Сводная таблица решений заданий</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Номер задания</th>
+                <th>Решение</th>
+                <th>Результат</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($tasks as $task): ?>
+                <tr>
+                    <td><?php echo $task['number']; ?></td>
+                    <td><pre><?php echo $task['solution']; ?></pre></td>
+                    <td><pre><?php 
+                    if ($task['number'] == 7) {
+                        var_dump($mas); 
+                    }
+                    if ($task['number'] == 17) {
+                        var_dump($merged_mas); 
+                    }
+                    echo $task['result']; ?></pre></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</body>
+</html>
