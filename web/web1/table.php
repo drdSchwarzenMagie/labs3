@@ -12,7 +12,7 @@ $tasks = [
     [
         'number' => 2,
         'solution' => 'echo $a + $str;',
-        'result' => $a + (int)$str 
+        'result' => "Fatal error: Uncaught TypeError: Unsupported operand types: int + string"
     ],
     [
         'number' => 3,
