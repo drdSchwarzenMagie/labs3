@@ -1,45 +1,61 @@
+-- РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РІР»Р°РґРµР»СЊС†РµРІ РєРІР°СЂС‚РёСЂ
 CREATE TABLE tblOwner (
-    intOwnerId INTEGER IDENTITY(1,1) PRIMARY KEY,           -- Идентификатор владельца квартиры
-    txtOwnerSurname CHAR(30),                 -- Фамилия владельца
-    txtOwnerName CHAR(25),                    -- Имя владельца
-    txtOwnerSecondName CHAR(30),              -- Отчество владельца
-    txtAddress CHAR(100)                      -- Адрес фактического проживания владельца
+    intOwnerId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    txtOwnerSurname NVARCHAR(30) NOT NULL,
+    txtOwnerName NVARCHAR(25) NOT NULL,
+    txtOwnerSecondName NVARCHAR(30),
+    txtAddress NVARCHAR(100) NOT NULL
 );
 
-
+-- РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РєРІР°СЂС‚РёСЂ
 CREATE TABLE tblFlat (
-    intFlatId INTEGER IDENTITY(1,1) PRIMARY KEY,          -- Идентификатор квартиры
-    txtFlatAddress CHAR(100),               -- Адрес квартиры
-    intOwnerId INTEGER NOT NULL,            -- Владелец квартиры
-    fltArea DECIMAL,                        -- Площадь квартиры
-    intCount INTEGER,                       -- Количество проживающих
-    intStorey INTEGER,                      -- Этаж
-	-- FOREIGN KEY (intOwnerId) REFERENCES tblOwner(intOwnerId)
-);
-
-CREATE TABLE tblWorker (
-    intWorkerId INTEGER PRIMARY KEY,            -- Идентификатор рабочего
-    txtWorkerSurname CHAR(30),                   -- Фамилия рабочего
-    txtWorkerName CHAR(25),                      -- Имя рабочего
-    txtWorkerSecondName CHAR(30),                -- Отчество рабочего
-    txtWorkerSpecialist CHAR(50),                -- Специальность рабочего
-    fltSum DECIMAL                               -- Сумма за выполненные работы
+    intFlatId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    txtFlatAddress NVARCHAR(100) NOT NULL,
+    intOwnerId INT NOT NULL,
+    fltArea DECIMAL(10,2) NOT NULL CHECK (fltArea > 0),
+    intCount INT NOT NULL CHECK (intCount >= 0),
+    intStorey INT NOT NULL CHECK (intStorey > 0),
+    CONSTRAINT FK_Flat_Owner FOREIGN KEY (intOwnerId)
+        REFERENCES tblOwner(intOwnerId)
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION
 );
 
-CREATE TABLE tblOperationType (
-    intOperationTypeId INTEGER PRIMARY KEY,       -- Идентификатор типа работ
-    txtOperationTypeName CHAR(100),                -- Наименование типа работ
-    fltOperationPrice DECIMAL                      -- Стоимость проведения работы
+-- РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ СЂР°Р±РѕС‡РёС…
+CREATE TABLE tblWorker (
+    intWorkerId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    txtWorkerSurname NVARCHAR(30) NOT NULL,
+    txtWorkerName NVARCHAR(25) NOT NULL,
+    txtWorkerSecondName NVARCHAR(30),
+    txtWorkerSpecialist NVARCHAR(50) NOT NULL,
+    fltSum DECIMAL(10,2) NOT NULL CHECK (fltSum >= 0)
 );
+
+-- РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ С‚РёРїРѕРІ СЂР°Р±РѕС‚
+CREATE TABLE tblOperationType (
+    intOperationTypeId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    txtOperationTypeName NVARCHAR(100) NOT NULL,
+    fltOperationPrice DECIMAL(10,2) NOT NULL CHECK (fltOperationPrice >= 0)
+);
+
+-- РЎРѕР·РґР°РЅРёРµ С‚Р°Р±Р»РёС†С‹ РїСЂРѕРІРµРґРµРЅРЅС‹С… СЂР°Р±РѕС‚
 CREATE TABLE tblOperation (
-    intOperationId INTEGER PRIMARY KEY,  -- Идентификатор проведенной работы
-    intFlatId INTEGER NOT NULL,          -- Квартира
-    intOperationTypeId INTEGER NOT NULL, -- Тип работ
-    datOperationDate DATE NOT NULL,      -- Дата проведения работ
-    intWorkerId INTEGER NOT NULL,        -- Рабочий
-    txtOperationDescription CHAR(255),   -- Описание работ
-    
-    -- FOREIGN KEY (intFlatId) REFERENCES tblFlat(intFlatId),
-    -- FOREIGN KEY (intOperationTypeId) REFERENCES tblOperationType(intOperationTypeId),
-   -- FOREIGN KEY (intWorkerId) REFERENCES tblWorker(intWorkerId)
+    intOperationId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
+    intFlatId INT NOT NULL,
+    intOperationTypeId INT NOT NULL,
+    datOperationDate DATE NOT NULL,
+    intWorkerId INT NOT NULL,
+    txtOperationDescription NVARCHAR(255),
+    CONSTRAINT FK_Operation_Flat FOREIGN KEY (intFlatId)
+        REFERENCES tblFlat(intFlatId)
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
+    CONSTRAINT FK_Operation_OperationType FOREIGN KEY (intOperationTypeId)
+        REFERENCES tblOperationType(intOperationTypeId)
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION,
+    CONSTRAINT FK_Operation_Worker FOREIGN KEY (intWorkerId)
+        REFERENCES tblWorker(intWorkerId)
+        ON UPDATE CASCADE
+        ON DELETE NO ACTION
 );
