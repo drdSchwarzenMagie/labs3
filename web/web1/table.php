@@ -17,7 +17,7 @@ $tasks = [
     [
         'number' => 3,
         'solution' => 'echo $a == $str;',
-        'result' => ($a == $str) ? 'TRUE' : 'FALSE' // Ожидаем FALSE, так как типы разные
+        'result' => ($a == $str) ? 'TRUE' : 'FALSE'
     ],
     [
         'number' => 4,
@@ -87,7 +87,7 @@ $tasks = [
     ],
     [
         'number' => 16,
-        'solution' => '$str.$nol + 1',
+        'solution' => '$str.$nol . 1',
         'result' => ($str . $nol . '1')
     ],
     [
