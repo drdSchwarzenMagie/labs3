@@ -21,7 +21,7 @@ CREATE TABLE tblFlat (
         ON DELETE NO ACTION
 );
 
--- Создание таблицы рабочих
+-- Создание таблицы 
 CREATE TABLE tblWorker (
     intWorkerId INT IDENTITY(1,1) PRIMARY KEY NOT NULL,
     txtWorkerSurname NVARCHAR(30) NOT NULL,

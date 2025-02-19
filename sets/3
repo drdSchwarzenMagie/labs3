@@ -1,0 +1,30 @@
+1. nslookup petrsu.ru                                                         ╤хЁтхЁ:  UnKnown                                                              Address:  192.168.0.1                                                         Не заслуживающий доверия ответ:
+╚ь :     petrsu.ru                                                       Address:  194.85.173.228
+2. petrsu.ru       nameserver = ns.petrsu.ru                                  petrsu.ru       nameserver = ns.karelia.ru 
+3. nslookup petrsu.ru ns.petrsu.ru                                            ╤хЁтхЁ:  ns.petrsu.ru                                                         Address:  193.232.254.218                                                                                                                               ╚ь :     petrsu.ru                                                       Address:  194.85.173.228 
+4. ipconfig /all
+ipconfig /displaydns
+ipconfig /flushdns
+5. UDP
+6.  Source Port: 53
+	Destination Port: 54182
+7. одинаковые
+8. A
+В DNS-запросе нет ответов
+9. Answers
+    www.ietf.org: type A, class IN, addr 104.16.45.99
+    www.ietf.org: type A, class IN, addr 104.16.44.99
+10. да соотв
+11. выполняются 7
+12. 2
+13. 53
+14. Совп
+15. A & AAAA, нет ответов
+16. по одному
+17. совпадает
+18. NS, нет ответов
+19. petrsu.ru: type NS, class IN, ns ns.karelia.ru
+petrsu.ru: type NS, class IN, ns ns.petrsu.ru
+20. не совпадает, ns.petrsu.ru
+21. A & AAAA, нет ответов
+22. по одному
