@@ -14,7 +14,7 @@
 15. 128.119.245.12 /wireshark-labs/HTTP-wireshark-file4.html  
 	128.119.245.12 /pearson.png
 	178.79.137.164 /8E_cover_small.jpg
-16. Загрузка изображений происходила параллельно, поскольку изображения находятся на разных веб-серверах.
+16. Последовательно.
 17. 401 Unauthorized
 18. Authorization
 19. wireshark-students:network в формате Base64
