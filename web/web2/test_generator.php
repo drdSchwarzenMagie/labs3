@@ -17,9 +17,8 @@ $xmlContent = preg_replace('/<\?xml.*?\?>/', '', $xmlContent);
 $xmlContent = preg_replace('/<\/?test\s*>/', '', $xmlContent);
 
 // Приводим теги к нормальному виду
-$xmlContent = preg_replace('/<\s*(\/?\w+)\s*>/u', '<$1>', $xmlContent);
+$xmlContent = preg_replace('/<\s*(\/?\w+)\s*>|<\/\s*(\w+)\s*>/u', '<$1$2>', $xmlContent);
 $xmlContent = preg_replace('/<\s*(\w+)\s+([^>]+)>/u', '<$1 $2>', $xmlContent);
-$xmlContent = preg_replace('/<\/\s*(\w+)\s*>/u', '</$1>', $xmlContent);
 
 // Разбиваем на строки
 $lines = preg_split('/\r?\n/', $xmlContent);
