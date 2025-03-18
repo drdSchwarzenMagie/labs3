@@ -30,8 +30,19 @@ function sendSmtpMail($host, $port, $to, $from, $subject, $message) {
     fwrite($socket, "DATA\r\n");
     echo fgets($socket, 512);
 
-    // Отправка сообщения
-    fwrite($socket, "Subject: $subject\r\n\r\n$message\r\n.\r\n");
+    // Кодируем тему в UTF-8
+    $subject = "=?UTF-8?B?" . base64_encode($subject) . "?=";
+
+    // Формируем заголовки
+    $headers = "MIME-Version: 1.0\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= "Content-Transfer-Encoding: 8bit\r\n";
+    $headers .= "From: <$from>\r\n";
+    $headers .= "To: <$to>\r\n";
+    $headers .= "Subject: $subject\r\n\r\n";
+
+    // Отправка заголовков и тела письма
+    fwrite($socket, $headers . $message . "\r\n.\r\n");
     echo fgets($socket, 512);
 
     // Завершение сессии
