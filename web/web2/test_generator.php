@@ -61,7 +61,7 @@ foreach ($questions as $qIndex => $question) {
         echo "<li>" . ($qIndex + 1) . "." . ($aIndex + 1) . " $answer</li>\n";
     }
     echo "</ul>\n</li>\n";
-}
+}   
 
 echo "</ol>\n</body>\n</html>";
 ?>
