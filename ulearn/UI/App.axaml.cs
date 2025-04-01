@@ -2,7 +2,7 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 
-namespace Dungeon.UI;
+namespace Rivals.UI;
 
 public partial class App : Application
 {

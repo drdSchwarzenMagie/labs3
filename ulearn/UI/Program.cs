@@ -2,7 +2,7 @@
 using Avalonia;
 using Avalonia.ReactiveUI;
 
-namespace Dungeon.UI;
+namespace Rivals.UI;
 
 internal static class Program
 {

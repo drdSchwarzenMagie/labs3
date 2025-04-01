@@ -1,4 +1,4 @@
-﻿namespace Dungeon;
+﻿namespace Rivals;
 
 public enum MapCell
 {
