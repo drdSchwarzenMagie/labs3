@@ -1,9 +1,9 @@
 import sys
-from PyQt5.QtWidgets import (
+from PySide6.QtWidgets import (
     QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QPushButton,
     QHBoxLayout
 )
-from PyQt5.QtCore import Qt
+from PySide6.QtCore import Qt
 from db_connection import *
 
 # Функция для получения данных из базы данных
@@ -150,7 +150,7 @@ if __name__ == "__main__":
     window.show()
 
     # Запуск приложения
-    exit_code = app.exec_()
+    exit_code = app.exec()
 
     # Закрытие соединения после завершения работы
     db_connection_close(connection, cursor)
