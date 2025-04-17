@@ -1,5 +1,5 @@
 <?php
-session_start();
+// session_start();
 
 // Проверяем наличие cookie с количеством посещений
 if (isset($_COOKIE['visits'])) {
