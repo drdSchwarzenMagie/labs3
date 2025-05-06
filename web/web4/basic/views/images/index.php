@@ -30,11 +30,12 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            // 'id',
             'name',
             'caption',
             [
                 'class' => ActionColumn::className(),
+                'header' => 'Actions',
                 'urlCreator' => function ($action, Images $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
@@ -43,12 +44,12 @@ $this->params['breadcrumbs'][] = $this->title;
     ]); ?>
     <?= \yii\widgets\LinkPager::widget([
     'pagination' => $dataProvider->pagination,
-    'options' => ['class' => 'pagination justify-content-center'], // Центрирование пагинации
-    'linkOptions' => ['class' => 'page-link'], // Стиль ссылок
-    'disabledPageCssClass' => 'disabled', // Неактивные страницы
-    'activePageCssClass' => 'active', // Активная страница
-    'prevPageLabel' => '«', // Иконка для предыдущей страницы
-    'nextPageLabel' => '»', // Иконка для следующей страницы
+    'options' => ['class' => 'pagination justify-content-center'],
+    'linkOptions' => ['class' => 'page-link'],
+    'disabledPageCssClass' => 'disabled',
+    'activePageCssClass' => 'active',
+    'prevPageLabel' => '«',
+    'nextPageLabel' => '»',
 ]) ?>
 
 
