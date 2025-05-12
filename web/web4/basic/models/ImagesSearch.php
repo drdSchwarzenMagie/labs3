@@ -45,7 +45,7 @@ class ImagesSearch extends Images
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => 5,
+                'pageSize' => 4,
             ],
         ]);
 

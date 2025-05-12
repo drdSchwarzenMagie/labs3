@@ -21,7 +21,8 @@ def connect_with_ssh_tunnel():
     tunnel.start()
     print("SSH туннель открыт на порту: ", tunnel.local_bind_port)
     connection_params = (
-                "DRIVER={SQL Server};"
+                # "DRIVER={SQL Server};"
+                "DRIVER={ODBC Driver 17 for SQL Server};"
                 f"SERVER=127.0.0.1,{tunnel.local_bind_port};"
                 f"DATABASE={db_name};"
                 f"UID={db_user};"

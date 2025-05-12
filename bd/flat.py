@@ -1,10 +1,13 @@
 import sys
 from PySide6.QtWidgets import (
-    QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget, QPushButton,
-    QHBoxLayout
+    QApplication, QMainWindow, QTableWidget, QTableWidgetItem, QVBoxLayout, QWidget,
+    QPushButton, QHBoxLayout, QMessageBox
 )
 from PySide6.QtCore import Qt
-from db_connection import *
+from db_connection import connect_with_ssh_tunnel, db_connection_close
+from add_flat_window import AddFlatWindow
+from flat_info_window import FlatInfoWindow  # Импорт новой формы
+
 
 # Функция для получения данных из базы данных
 def fetch_flat_data(cursor):
@@ -28,57 +31,78 @@ def fetch_flat_data(cursor):
         print(f"Ошибка при выполнении запроса: {e}")
         return []
 
+
 # Главное окно приложения
 class MainWindow(QMainWindow):
-    def __init__(self, cursor):
+    def __init__(self, cursor, connection):
         super().__init__()
         self.cursor = cursor
+        self.connection = connection
         self.setWindowTitle("Квартиры")
         self.setGeometry(100, 100, 800, 400)
 
         # Применение глобальных стилей через CSS
         self.setStyleSheet("""
-            QMainWindow {
-                background-color: #f5f5f5; /* Цвет фона окна */
-            }
-            QTableWidget {
-                background-color: white;
-                border: 1px solid #ccc;
-                gridline-color: #ccc;
-                font-size: 14px;
-                selection-background-color: #d3eaff; /* Цвет выделенной строки */
-            }
-            QHeaderView::section {
-                background-color: #e0e0e0;
-                padding: 5px;
-                border: 1px solid #ccc;
-                font-weight: bold;
-            }
-            QPushButton {
-                background-color: #007bff; /* Синяя кнопка */
-                color: white;
-                border: none;
-                border-radius: 5px;
-                padding: 10px 20px;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #0056b3; /* Цвет при наведении */
-            }
-            QPushButton:disabled {
-                background-color: #cccccc; /* Цвет неактивной кнопки */
-                color: #666666;
-            }
-        """)
+    QWidget {
+        background-color: #fdf6f0;
+        color: #333333;
+        font-family: 'Segoe UI', Arial;
+        font-size: 14px;
+    }
+    QLabel {
+        color: #333333;
+        font-weight: bold;
+        font-size: 16px;
+    }
+    QLineEdit, QComboBox, QDateTimeEdit {
+        border: 1px solid #ccc;
+        padding: 5px;
+        border-radius: 4px;
+        background-color: white;
+        color: #333333;
+    }
+    QPushButton {
+        background-color: #9e3a26;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 8px 16px;
+        min-width: 90px;
+    }
+    QPushButton:hover {
+        background-color: #7a3024;
+    }
+    QPushButton#secondary {
+        background-color: #6b4423;
+    }
+    QPushButton#secondary:hover {
+        background-color: #55331a;
+    }
+    QTableWidget {
+        background-color: white;
+        border: 1px solid #e0e0e0;
+        gridline-color: #eee;
+        selection-background-color: #f5dcdc;
+        color: #333333;
+    }
+    QHeaderView::section {
+        background-color: #8B5E3C;
+        padding: 5px;
+        border: 1px solid #7a4c2d;
+        font-weight: bold;
+        color: white;
+    }
+""")
 
         # Создание виджетов
         self.table = QTableWidget(self)
-        self.refresh_button = QPushButton("Обновить", self)
+        # self.refresh_button = QPushButton("Обновить", self)
         self.add_flat_button = QPushButton("Добавить квартиру", self)
-        self.add_flat_button.setEnabled(False)  # Кнопка пока не рабочая
 
         # Настройка кнопок
-        self.refresh_button.clicked.connect(self.refresh_table)
+        # self.refresh_button.clicked.connect(self.refresh_table)
+        self.add_flat_button.clicked.connect(self.open_add_flat_window)
+        self.table.cellDoubleClicked.connect(self.on_cell_double_clicked)  # <-- Новый обработчик
 
         # Минимальная высота таблицы
         self.table.setMinimumHeight(300)
@@ -101,7 +125,7 @@ class MainWindow(QMainWindow):
         main_layout = QHBoxLayout()
 
         # Добавляем кнопку "Обновить" слева
-        main_layout.addWidget(self.refresh_button, alignment=Qt.AlignLeft)
+        # main_layout.addWidget(self.refresh_button, alignment=Qt.AlignLeft)
 
         # Добавляем контейнер с таблицей и кнопкой "Добавить квартиру" справа
         main_layout.addLayout(table_container_layout, stretch=1)
@@ -134,10 +158,39 @@ class MainWindow(QMainWindow):
             for col_idx, cell_data in enumerate(row_data):
                 item = QTableWidgetItem(str(cell_data))
                 item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)  # Только для чтения
+                item.setForeground(Qt.black)  # Явно установить цвет текста
                 self.table.setItem(row_idx, col_idx, item)
 
         # Настройка ширины столбцов
         self.table.resizeColumnsToContents()
+
+    # Открытие формы добавления квартиры
+    def open_add_flat_window(self):
+        self.add_window = AddFlatWindow(self.cursor, self.connection, self)
+        self.add_window.show()
+
+    # Обработка двойного клика на ячейке
+    def on_cell_double_clicked(self, row, column):
+        headers = ["Адрес", "ФИО владельца", "Этаж", "Площадь", "Количество жильцов"]
+        if headers[column] == "Адрес":
+            address_item = self.table.item(row, 0)
+            if address_item:
+                flat_address = address_item.text()
+                # Получаем intFlatId по адресу
+                try:
+                    self.cursor.execute("SELECT intFlatId FROM tblFlat WHERE txtFlatAddress = ?", (flat_address,))
+                    result = self.cursor.fetchone()
+                    if result:
+                        flat_id = result[0]
+                        self.open_flat_info_window(flat_id)
+                except Exception as e:
+                    QMessageBox.critical(self, "Ошибка", f"Не удалось получить ID квартиры:\n{e}")
+
+    # Открытие формы просмотра информации о квартире
+    def open_flat_info_window(self, flat_id):
+        self.flat_info_window = FlatInfoWindow(self.cursor, self.connection, flat_id, parent=None)
+        self.flat_info_window.show()
+
 
 # Основная функция для запуска приложения
 if __name__ == "__main__":
@@ -146,7 +199,7 @@ if __name__ == "__main__":
 
     # Создание приложения
     app = QApplication(sys.argv)
-    window = MainWindow(cursor)
+    window = MainWindow(cursor, connection)
     window.show()
 
     # Запуск приложения
