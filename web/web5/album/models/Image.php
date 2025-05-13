@@ -32,7 +32,6 @@ class Image extends ActiveRecord
         return [
             [['filename', 'owner'], 'required'],
             [['caption'], 'string', 'max' => 25, 'tooLong' => 'Описание не должно превышать 25 символов.'],
-            [['is_public'], 'boolean'],
             [['created_at'], 'safe'],
             [['filename', 'owner'], 'string', 'max' => 255],
             [['imageFile'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg, jpeg, gif'],
