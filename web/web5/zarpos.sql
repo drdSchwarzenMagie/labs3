@@ -1,0 +1,14 @@
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    login VARCHAR(16) NOT NULL UNIQUE,
+    password VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(256) NOT NULL,
+    caption VARCHAR(256),
+    user_id INT NOT NULL,
+    is_private BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+);
