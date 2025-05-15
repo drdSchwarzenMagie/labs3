@@ -15,7 +15,7 @@ class AlbumController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::class,
-                'only' => ['index', 'upload', 'delete', 'view', 'publish'],
+                'only' => ['index', 'upload', 'delete', 'view'],
                 'rules' => [
                     [
                         'allow' => true,
@@ -85,14 +85,5 @@ class AlbumController extends Controller
         }
         return $this->render('delete', ['model' => $model]);
     }
-
-    // C5: Публикация
-    public function actionPublish($id, $public)
-    {
-        $model = Image::findOne($id);
-        if ($model && $model->owner === Yii::$app->user->identity->login) {
-            $model->save(false);
-        }
-        return $this->redirect(['index']);
-    }
+    
 }
