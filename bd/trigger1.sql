@@ -1,34 +1,25 @@
-CREATE TRIGGER trg_CheckOneWorkPerDay
+CREATE TRIGGER trg_CheckOneOperationPerDayPerFlat
 ON tblOperation
-INSTEAD OF INSERT
+AFTER INSERT
 AS
 BEGIN
-    -- Проверка на наличие дубликатов по intFlatId + datOperationDate
+    -- Проверяем, есть ли вставленные записи, нарушающие правило
     IF EXISTS (
         SELECT 1
-        FROM inserted i
-        JOIN tblOperation o 
-          ON i.intFlatId = o.intFlatId 
-          AND CAST(i.datOperationDate AS DATE) = CAST(o.datOperationDate AS DATE)
+        FROM tblOperation o
+        INNER JOIN inserted i 
+            ON o.intFlatId = i.intFlatId
+            AND o.datOperationDate = i.datOperationDate
+        WHERE o.intOperationId <> i.intOperationId  -- Исключаем только что вставленную запись
+        GROUP BY o.intFlatId, o.datOperationDate
+        HAVING COUNT(*) > 0
     )
     BEGIN
-        RAISERROR('Нельзя добавлять более одной работы в день для одной квартиры.', 16, 1);
+        -- Откатываем транзакцию
+        ROLLBACK TRANSACTION;
+
+        -- Сообщение об ошибке
+        THROW 50001, 'Нельзя добавить более одной работы для одной квартиры в один день.', 1;
         RETURN;
     END
-
-    -- Если всё в порядке — вставляем данные
-    INSERT INTO tblOperation (
-        intFlatId,
-        intOperationTypeId,
-        datOperationDate,
-        intWorkerId,
-        txtOperationDescription
-    )
-    SELECT 
-        intFlatId,
-        intOperationTypeId,
-        datOperationDate,
-        intWorkerId,
-        txtOperationDescription
-    FROM inserted;
-END
+END;

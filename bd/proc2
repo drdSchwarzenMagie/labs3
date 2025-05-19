@@ -1,0 +1,37 @@
+CREATE PROCEDURE usp_Report_Work 
+    @ReportDate DATE = NULL -- необязательный параметр для фильтрации по дате
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    -- Удаляем временную таблицу, если она существует
+    IF OBJECT_ID('tempdb..#WorkReport') IS NOT NULL
+        DROP TABLE #WorkReport;
+
+    -- Создаем временную таблицу
+    CREATE TABLE #WorkReport (
+        WorkerFullName NVARCHAR(100),
+        FlatAddress NVARCHAR(100),
+        OperationDate DATE,
+        OperationTypeName NVARCHAR(100),
+        OperationPrice DECIMAL(10,2)
+    );
+
+    -- Заполняем данными из связанных таблиц
+    INSERT INTO #WorkReport (WorkerFullName, FlatAddress, OperationDate, OperationTypeName, OperationPrice)
+    SELECT 
+        w.txtWorkerSurname + ' ' + w.txtWorkerName + ISNULL(' ' + w.txtWorkerSecondName, '') AS WorkerFullName,
+        f.txtFlatAddress AS FlatAddress,
+        o.datOperationDate AS OperationDate,
+        ot.txtOperationTypeName AS OperationTypeName,
+        ot.fltOperationPrice AS OperationPrice
+    FROM tblOperation o
+    JOIN tblWorker w ON o.intWorkerId = w.intWorkerId
+    JOIN tblFlat f ON o.intFlatId = f.intFlatId
+    JOIN tblOperationType ot ON o.intOperationTypeId = ot.intOperationTypeId
+    WHERE 
+        (@ReportDate IS NULL OR CAST(o.datOperationDate AS DATE) = @ReportDate);
+
+    -- Выводим результат
+    SELECT * FROM #WorkReport ORDER BY OperationDate DESC;
+END;

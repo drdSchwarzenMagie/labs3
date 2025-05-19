@@ -96,12 +96,12 @@ class MainWindow(QMainWindow):
 
         # Создание виджетов
         self.table = QTableWidget(self)
-        # self.refresh_button = QPushButton("Обновить", self)
+        self.refresh_button = QPushButton("Обновить", self)
         self.add_flat_button = QPushButton("Добавить квартиру", self)
         self.exit_button = QPushButton("Выход", self)
 
         # Настройка кнопок
-        # self.refresh_button.clicked.connect(self.refresh_table)
+        self.refresh_button.clicked.connect(self.refresh_table)
         self.add_flat_button.clicked.connect(self.open_add_flat_window)
         self.table.cellDoubleClicked.connect(self.on_cell_double_clicked)  # <-- Новый обработчик
         self.exit_button.clicked.connect(self.return_to_main_menu)
@@ -129,6 +129,8 @@ class MainWindow(QMainWindow):
 
         # Добавляем кнопку "Обновить" слева
         button_layout.addWidget(self.exit_button, alignment=Qt.AlignLeft)
+
+        button_layout.addWidget(self.refresh_button, alignment=Qt.AlignLeft)
 
         # Добавляем контейнер с таблицей и кнопкой "Добавить квартиру" справа
         main_layout.addLayout(table_container_layout, stretch=1)
