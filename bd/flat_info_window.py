@@ -110,7 +110,7 @@ class FlatInfoWindow(QMainWindow):
         add_work_button.clicked.connect(self.open_add_operation_window)
 
         close_button = QPushButton("Закрыть")
-        close_button.clicked.connect(self.close)
+        close_button.clicked.connect(self.return_to_flat_window)
 
         button_layout.addWidget(add_work_button)
         button_layout.addWidget(close_button)
@@ -180,3 +180,8 @@ class FlatInfoWindow(QMainWindow):
         if dialog.exec() == QDialog.Accepted:
             QMessageBox.information(self, "Успех", "Работа успешно добавлена!")
             self.load_operation_data()
+    def return_to_flat_window(self):
+        
+        if self.parent():  # если MainWindow передан как parent
+            self.parent().show()  # показываем обратно главное окно
+        self.close()

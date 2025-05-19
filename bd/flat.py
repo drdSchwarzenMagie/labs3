@@ -98,11 +98,13 @@ class MainWindow(QMainWindow):
         self.table = QTableWidget(self)
         # self.refresh_button = QPushButton("Обновить", self)
         self.add_flat_button = QPushButton("Добавить квартиру", self)
+        self.exit_button = QPushButton("Выход", self)
 
         # Настройка кнопок
         # self.refresh_button.clicked.connect(self.refresh_table)
         self.add_flat_button.clicked.connect(self.open_add_flat_window)
         self.table.cellDoubleClicked.connect(self.on_cell_double_clicked)  # <-- Новый обработчик
+        self.exit_button.clicked.connect(self.return_to_main_menu)
 
         # Минимальная высота таблицы
         self.table.setMinimumHeight(300)
@@ -115,6 +117,7 @@ class MainWindow(QMainWindow):
 
         # Горизонтальный макет для кнопки "Добавить квартиру"
         button_layout = QHBoxLayout()
+        button_layout.setAlignment(Qt.AlignBottom)  
         button_layout.addStretch()  # Растяжение слева
         button_layout.addWidget(self.add_flat_button)
 
@@ -125,7 +128,7 @@ class MainWindow(QMainWindow):
         main_layout = QHBoxLayout()
 
         # Добавляем кнопку "Обновить" слева
-        # main_layout.addWidget(self.refresh_button, alignment=Qt.AlignLeft)
+        button_layout.addWidget(self.exit_button, alignment=Qt.AlignLeft)
 
         # Добавляем контейнер с таблицей и кнопкой "Добавить квартиру" справа
         main_layout.addLayout(table_container_layout, stretch=1)
@@ -188,8 +191,15 @@ class MainWindow(QMainWindow):
 
     # Открытие формы просмотра информации о квартире
     def open_flat_info_window(self, flat_id):
-        self.flat_info_window = FlatInfoWindow(self.cursor, self.connection, flat_id, parent=None)
+        self.flat_info_window = FlatInfoWindow(self.cursor, self.connection, flat_id, parent=self)
         self.flat_info_window.show()
+        self.hide()
+
+    def return_to_main_menu(self):
+        from main_menu_window import MainMenuWindow
+        self.main_menu = MainMenuWindow(self.cursor, self.connection)
+        self.main_menu.show()
+        self.close()  # Закрываем текущее окно
 
 
 # Основная функция для запуска приложения
