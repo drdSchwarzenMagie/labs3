@@ -1,0 +1,15 @@
+CREATE TABLE images (
+    id INT NOT NULL AUTO_INCREMENT,
+    filename VARCHAR(255) NOT NULL,
+    caption TEXT DEFAULT NULL,
+    owner VARCHAR(16) NOT NULL,
+    created_at DATETIME NOT NULL,
+    PRIMARY KEY (id)
+);
+
+CREATE TABLE users (
+    id INT NOT NULL AUTO_INCREMENT,
+    login VARCHAR(16) NOT NULL UNIQUE,
+    password VARCHAR(64) NOT NULL,
+    PRIMARY KEY (id)
+);

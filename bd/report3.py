@@ -102,4 +102,4 @@ def generate_operation_report(operation_type_name):
 
 if __name__ == "__main__":
     # Пример вызова
-    generate_operation_report("Установка сантехники")
+    generate_operation_report("Столярные работы")
